@@ -1,2 +1,2 @@
 # B2S-Api
-api for sending daily messages
+api for B2S
