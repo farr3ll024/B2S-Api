@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "aXc+yoxlDSL0EX040nfnXDj31ZX4aoRSpqB8dqCCds4PQm6fJey9K5WLVHf5vu6Bj9ehPKt24VvVltXoN2LrOQ==",
+  "success": true,
+  "projectFilePath": "/Users/blaisereints/gitlab/B2S-Api/B2S-Api.csproj",
+  "expectedPackageFiles": [
+    "/Users/blaisereints/.nuget/packages/microsoft.aspnetcore.openapi/8.0.4/microsoft.aspnetcore.openapi.8.0.4.nupkg.sha512",
+    "/Users/blaisereints/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/Users/blaisereints/.nuget/packages/microsoft.openapi/1.4.3/microsoft.openapi.1.4.3.nupkg.sha512",
+    "/Users/blaisereints/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
+    "/Users/blaisereints/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
+    "/Users/blaisereints/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
+    "/Users/blaisereints/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.4.0/swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+  ],
+  "logs": []
+}
