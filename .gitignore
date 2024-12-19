@@ -18,3 +18,4 @@ obj/
 *.bak
 *.ncrunch*
 _ReSharper*/
+.idea/
