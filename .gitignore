@@ -1,0 +1,14 @@
+# Build artifacts
+bin/
+obj/
+.vs/
+TestResults/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
