@@ -1,8 +1,6 @@
-# Build artifacts
+# Build Folders
 bin/
 obj/
-.vs/
-TestResults/
 
 # User-specific files
 *.user
@@ -10,5 +8,13 @@ TestResults/
 *.userosscache
 *.sln.docstates
 
-# Logs
+# Auto-generated files
 *.log
+*.tlog
+*.vspscc
+*.vssscc
+
+# Backup & Report files
+*.bak
+*.ncrunch*
+_ReSharper*/
