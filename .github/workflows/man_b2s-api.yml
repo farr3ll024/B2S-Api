@@ -48,6 +48,11 @@ jobs:
         with:
           name: .net-app
 
+      - name: Debug - Check if AZURE_CREDENTIALS secret is set
+        run: echo "Checking AZURE_CREDENTIALS secret..."
+        env:
+          CHECK_SECRET: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Azure Login
         uses: azure/login@v1
         with:
