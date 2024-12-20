@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - b2s-api
 
 on:
@@ -47,15 +44,12 @@ jobs:
         with:
           name: .net-app
 
-      - name: Enable Azure CLI Debug Logging
-        run: az config set logging=debug
-
       - name: Clear Deployment Cache
         run: |
           echo "Clearing deployment cache..."
           rm -rf site/deployments
 
-      - name: Deploy to Azure Web App (ZIP Deployment for Debugging)
+      - name: Deploy to Azure Web App with Debug Logging
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
@@ -66,5 +60,5 @@ jobs:
         env:
           ACTIONS_STEP_DEBUG: true  # Enable verbose logging for debugging
 
-      - name: Stream Azure Deployment Logs
-        run: az webapp log tail --name b2s-api --resource-group b2s
+      - name: Stream Azure Deployment Logs with Debug
+        run: az webapp log tail --name b2s-api --resource-group <your-resource-group> --debug
