@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include=".github\workflows\" />
+      <Content Include=".github\workflows\man_b2s-api.yml" />
     </ItemGroup>
 
 </Project>
