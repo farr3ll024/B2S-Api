@@ -48,16 +48,20 @@ jobs:
         with:
           name: .net-app
 
-      - name: Debug - Check if AZURE_CREDENTIALS secret is set
-        run: echo "Checking AZURE_CREDENTIALS secret..."
+      # Debug step to check if AZURE_CREDENTIALS secret is set
+      - name: Debug - Check AZURE_CREDENTIALS Secret Presence
+        run: echo "AZURE_CREDENTIALS secret is set."
+        if: env.AZURE_CREDENTIALS != ''
         env:
-          CHECK_SECRET: ${{ secrets.AZURE_CREDENTIALS }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Azure Login Step
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Deploy to Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -69,5 +73,6 @@ jobs:
         env:
           ACTIONS_STEP_DEBUG: true  # Enable verbose logging for debugging
 
+      # Stream Azure Deployment Logs
       - name: Stream Azure Deployment Logs
         run: az webapp log tail --name b2s-api --resource-group b2s --debug
