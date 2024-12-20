@@ -47,7 +47,15 @@ jobs:
         with:
           name: .net-app
 
-      - name: Deploy to Azure Web App
+      - name: Enable Azure CLI Debug Logging
+        run: az config set logging=debug
+
+      - name: Clear Deployment Cache
+        run: |
+          echo "Clearing deployment cache..."
+          rm -rf site/deployments
+
+      - name: Deploy to Azure Web App (ZIP Deployment for Debugging)
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
@@ -57,3 +65,6 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_666CAA1D38694C0493F07C5AE3574B33 }}
         env:
           ACTIONS_STEP_DEBUG: true  # Enable verbose logging for debugging
+
+      - name: Stream Azure Deployment Logs
+        run: az webapp log tail --name b2s-api --resource-group b2s
