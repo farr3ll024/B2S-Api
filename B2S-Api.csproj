@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include=".github\workflows\deploy.yml" />
+      <Folder Include=".github\workflows\" />
     </ItemGroup>
 
 </Project>
