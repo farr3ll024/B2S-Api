@@ -39,20 +39,17 @@ jobs:
     timeout-minutes: 20  # Set a timeout of 20 minutes for the deployment job
 
     steps:
-      - name: Stream Azure Deployment Logs with Debug
-        run: az webapp log tail --name b2s-api --resource-group b2s --debug
-        
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
 
-      - name: Clear Deployment Cache
-        run: |
-          echo "Clearing deployment cache..."
-          rm -rf site/deployments
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy to Azure Web App with Debug Logging
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
@@ -62,3 +59,6 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_666CAA1D38694C0493F07C5AE3574B33 }}
         env:
           ACTIONS_STEP_DEBUG: true  # Enable verbose logging for debugging
+
+      - name: Stream Azure Deployment Logs
+        run: az webapp log tail --name b2s-api --resource-group <your-resource-group>
