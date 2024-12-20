@@ -65,9 +65,9 @@ jobs:
       # Azure CLI Login with Service Principal
       - name: Azure CLI Login
         run: |
-          clientId=$(echo '${{ secrets.AZURE_CREDENTIALS.ClientId }}' | jq -r '.clientId')
-          clientSecret=$(echo '${{ secrets.AZURE_CREDENTIALS.ClientSecret }}' | jq -r '.clientSecret')
-          tenantId=$(echo '${{ secrets.AZURE_CREDENTIALS.TenantId }}' | jq -r '.tenantId')
+          clientId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientId')
+          clientSecret=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.clientSecret')
+          tenantId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.tenantId')
 
           if [ -z "$clientId" ] || [ -z "$clientSecret" ] || [ -z "$tenantId" ]; then
             echo "One or more required fields (clientId, clientSecret, tenantId) are missing in AZURE_CREDENTIALS."
