@@ -76,17 +76,6 @@ jobs:
 
           az login --service-principal -u "$clientId" -p "$clientSecret" --tenant "$tenantId"
 
-      # Verify and set the Azure Subscription
-      - name: Set Azure Subscription
-        run: |
-          subscriptionId=$(echo '${{ secrets.AZURE_CREDENTIALS }}' | jq -r '.subscriptionId')
-          if [ -z "$subscriptionId" ]; then
-            echo "Subscription ID is missing in AZURE_CREDENTIALS."
-            exit 1
-          fi
-          az account set --subscription "$subscriptionId"
-          echo "Set the subscription to $subscriptionId."
-
       # Deploy to Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
