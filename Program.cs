@@ -19,6 +19,19 @@ builder.Configuration.AddAzureAppConfiguration(options =>
     if (!string.IsNullOrEmpty(appConfigConnectionString)) options.Connect(appConfigConnectionString).Select("*");
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            var portalUrl = builder.Configuration["PortalUrl"];
+            if (!string.IsNullOrEmpty(portalUrl))
+                policy.WithOrigins(portalUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+        });
+});
+
 // -------------------------------
 // Add services to the container
 // -------------------------------
@@ -27,11 +40,13 @@ builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 
+
 // -------------------------------
 // Middleware pipeline
 // -------------------------------
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 // -------------------------------
