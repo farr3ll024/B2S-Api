@@ -16,4 +16,8 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include=".github\workflows\man_b2s-api.yml"/>
+    </ItemGroup>
+
 </Project>
