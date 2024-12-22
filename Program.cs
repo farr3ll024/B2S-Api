@@ -30,9 +30,11 @@ builder.Services.AddCors(options =>
                     .AllowAnyHeader()
                     .AllowAnyMethod();
 
-            policy.WithOrigins("http://localhost:3000")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            var portalUrl2 = builder.Configuration["PortalUrl2"];
+            if (!string.IsNullOrEmpty(portalUrl2))
+                policy.WithOrigins(portalUrl2)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
         });
 });
 
