@@ -18,7 +18,7 @@ public class EmailsController(EmailService emailService) : ControllerBase
             emailRequest.HtmlContent
         );
 
-        return success
+        return success != null
             ? Ok(new { Message = "Email sent successfully!" })
             : StatusCode(500, new { Error = "Failed to send email." });
     }
