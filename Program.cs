@@ -25,14 +25,10 @@ builder.Services.AddCors(options =>
         policy =>
         {
             var portalUrl = builder.Configuration["PortalUrl"];
-            if (!string.IsNullOrEmpty(portalUrl))
-                policy.WithOrigins(portalUrl)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-
             var portalUrl2 = builder.Configuration["PortalUrl2"];
-            if (!string.IsNullOrEmpty(portalUrl2))
-                policy.WithOrigins(portalUrl2)
+
+            if (!string.IsNullOrEmpty(portalUrl) && !string.IsNullOrEmpty(portalUrl2))
+                policy.WithOrigins(portalUrl, portalUrl2)
                     .AllowAnyHeader()
                     .AllowAnyMethod();
         });
