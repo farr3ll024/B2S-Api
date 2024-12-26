@@ -1,5 +1,6 @@
 using Azure.Identity;
 using B2S_Api.Services;
+using Microsoft.Azure.Cosmos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,40 @@ builder.Services.AddCors(options =>
                     .AllowAnyMethod();
         });
 });
+
+
+const string databaseId = "communication";
+const string containerId = "emails";
+var cosmosdbConnectionString = builder.Configuration["COSMOS_DB_CONNECTION_STRING"];
+var cosmosAccountKey = builder.Configuration["COSMOS_DB_ACCOUNT_KEY"];
+var cosmosAccountEndpoint = builder.Configuration["COSMOS_DB_ENDPOINT"];
+
+if (!string.IsNullOrEmpty(cosmosdbConnectionString) &&
+    !string.IsNullOrEmpty(cosmosAccountKey) &&
+    !string.IsNullOrEmpty(cosmosAccountEndpoint) &&
+    !string.IsNullOrEmpty(databaseId) &&
+    !string.IsNullOrEmpty(containerId))
+{
+    builder.Services.AddSingleton(_ =>
+    {
+        var cosmosClientOptions = new CosmosClientOptions
+        {
+            ConnectionMode = ConnectionMode.Gateway
+        };
+
+        return new CosmosClient(cosmosdbConnectionString, cosmosClientOptions);
+    });
+
+    builder.Services.AddSingleton<CosmosDbService>(sp =>
+    {
+        var cosmosClient = sp.GetRequiredService<CosmosClient>();
+        var cosmosDbService = new CosmosDbService(cosmosClient, databaseId, containerId);
+        return cosmosDbService;
+    });
+}
+
+// Add Background Service
+builder.Services.AddHostedService<MessageSenderService>();
 
 // -------------------------------
 // Add services to the container
