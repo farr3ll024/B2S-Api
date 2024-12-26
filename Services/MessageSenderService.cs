@@ -35,12 +35,10 @@ public class MessageSenderService : BackgroundService
             );
             var delay = nextRunTime - now;
 
-            if (delay.TotalMilliseconds > 0)
-            {
-                _logger.LogInformation($"Waiting until {nextRunTime} to send the next message...");
-                await Task.Delay(delay, stoppingToken);
-            }
+            if (!(delay.TotalMilliseconds > 0)) continue;
 
+            _logger.LogInformation($"Waiting until {nextRunTime} to send the next message...");
+            await Task.Delay(delay, stoppingToken);
             await SendFirstMessageAsync(stoppingToken);
         }
     }
@@ -50,7 +48,9 @@ public class MessageSenderService : BackgroundService
         try
         {
             // Retrieve the first message from Cosmos DB
-            var messages = await _cosmosDbService.GetItemsAsync<Message>("SELECT * FROM c ORDER BY c._ts ASC");
+            var query = "SELECT * FROM c WHERE NOT IS_NULL(c.id) AND NOT IS_NULL(c.partitionKey) AND IS_NULL(c.sent)";
+            var messages = await _cosmosDbService.GetItemsAsync<Message>(query);
+
             var firstMessage = messages.FirstOrDefault();
 
             if (firstMessage != null)
@@ -62,9 +62,8 @@ public class MessageSenderService : BackgroundService
                 await _emailService.SendEmailAsync(firstMessage.RecipientEmail, firstMessage.Subject,
                     firstMessage.PlainTextContent, firstMessage.HtmlContent);
 
-                // Mark the message as sent (instead of deleting, per TODO)
-                // firstMessage.IsSent = true;
-                // await _cosmosDbService.UpdateItemAsync(firstMessage.Id, firstMessage);
+                firstMessage.Sent = DateTime.UtcNow;
+                await _cosmosDbService.UpdateItemAsync(firstMessage.Id, firstMessage, firstMessage.PartitionKey);
                 // _logger.LogInformation("Message sent and marked as sent in the database.");
             }
             else
@@ -93,13 +92,10 @@ public class Message
 {
     public string Id { get; set; }
     public string Key { get; set; }
+    public string PartitionKey { get; set; }
     public string RecipientEmail { get; set; }
     public string Subject { get; set; }
     public string PlainTextContent { get; set; }
     public string HtmlContent { get; set; }
-    public string Rid { get; set; }
-    public string Self { get; set; }
-    public string Etag { get; set; }
-    public string Attachments { get; set; }
-    public long Ts { get; set; } // Unix timestamp
+    public DateTime? Sent { get; set; } // Allow null values
 }

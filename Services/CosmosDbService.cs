@@ -50,21 +50,28 @@ public class CosmosDbService(CosmosClient cosmosClient, string databaseId, strin
             throw new Exception("Exception thrown while fetching cosmos items", ex);
         }
     }
-
+    
     public async Task UpdateItemAsync<T>(string id, T updatedItem, string partitionKey)
     {
         try
         {
-            // Replace the item with the updated item
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(partitionKey))
+            {
+                throw new ArgumentException("id and partitionKey cannot be null or empty.");
+            }
+
+            // _logger.LogInformation($"Updating document with id: {id} and partitionKey: {partitionKey}");
             await _container.ReplaceItemAsync(updatedItem, id, new PartitionKey(partitionKey));
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            throw new Exception($"Item with id {id} not found in partition {partitionKey}", ex);
+            // _logger.LogError($"Document not found. id: {id}, partitionKey: {partitionKey}");
+            throw new Exception($"Document with id '{id}' and partitionKey '{partitionKey}' was not found.", ex);
         }
-        catch (CosmosException ex)
+        catch (Exception ex)
         {
-            throw new Exception($"Failed to update item with id {id} in partition {partitionKey}", ex);
+            // _logger.LogError($"Failed to update document. id: {id}, partitionKey: {partitionKey}, Error: {ex.Message}");
+            throw;
         }
     }
 }
