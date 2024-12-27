@@ -17,6 +17,7 @@ public class MessageSenderService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("MessageSenderService has started.");
+        return;
 
         // Check if the application is running in debugging mode
         if (IsDebugging())
