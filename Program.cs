@@ -25,13 +25,17 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            var portalUrl = builder.Configuration["PortalUrl"];
-            var portalUrl2 = builder.Configuration["PortalUrl2"];
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            
+            // var portalUrl = builder.Configuration["PortalUrl"];
+            // var portalUrl2 = builder.Configuration["PortalUrl2"];
 
-            if (!string.IsNullOrEmpty(portalUrl) && !string.IsNullOrEmpty(portalUrl2))
-                policy.WithOrigins(portalUrl, portalUrl2)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
+            // if (!string.IsNullOrEmpty(portalUrl) && !string.IsNullOrEmpty(portalUrl2))
+            //     policy.WithOrigins(portalUrl, portalUrl2)
+            //         .AllowAnyHeader()
+            //         .AllowAnyMethod();
         });
 });
 
