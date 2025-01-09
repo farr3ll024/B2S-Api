@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace B2S_Api.Services;
 
 public class MessageSenderService : BackgroundService
@@ -17,7 +19,6 @@ public class MessageSenderService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("MessageSenderService has started.");
-        return;
 
         // Check if the application is running in debugging mode
         if (IsDebugging())
@@ -63,8 +64,19 @@ public class MessageSenderService : BackgroundService
                 await _emailService.SendEmailAsync(firstMessage.RecipientEmail, firstMessage.Subject,
                     firstMessage.PlainTextContent, firstMessage.HtmlContent);
 
-                firstMessage.Sent = DateTime.UtcNow;
-                await _cosmosDbService.UpdateItemAsync(firstMessage.Id, firstMessage, firstMessage.PartitionKey);
+                var updatedMessage = new
+                {
+                    id = firstMessage.Id,
+                    key = firstMessage.Key,
+                    partitionKey = firstMessage.PartitionKey,
+                    recipientEmail = firstMessage.RecipientEmail,
+                    subject = firstMessage.Subject,
+                    plainTextContent = firstMessage.PlainTextContent,
+                    htmlContent = firstMessage.HtmlContent,
+                    sent = DateTime.Now
+                };
+
+                await _cosmosDbService.UpdateItemAsync(firstMessage.Id, updatedMessage, firstMessage.PartitionKey);
                 // _logger.LogInformation("Message sent and marked as sent in the database.");
             }
             else
@@ -91,12 +103,27 @@ public class MessageSenderService : BackgroundService
 // Model representing the message structure
 public class Message
 {
+    [JsonPropertyName("id")]
     public string Id { get; set; }
+
+    [JsonPropertyName("key")]
     public string Key { get; set; }
+
+    [JsonPropertyName("partitionKey")]
     public string PartitionKey { get; set; }
+
+    [JsonPropertyName("recipientEmail")]
     public string RecipientEmail { get; set; }
+
+    [JsonPropertyName("subject")]
     public string Subject { get; set; }
+
+    [JsonPropertyName("plainTextContent")]
     public string PlainTextContent { get; set; }
+
+    [JsonPropertyName("htmlContent")]
     public string HtmlContent { get; set; }
+
+    [JsonPropertyName("sent")]
     public DateTime? Sent { get; set; } // Allow null values
 }

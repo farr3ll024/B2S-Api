@@ -48,17 +48,9 @@ if (!string.IsNullOrEmpty(cosmosdbConnectionString) &&
     !string.IsNullOrEmpty(databaseId) &&
     !string.IsNullOrEmpty(containerId))
 {
-    builder.Services.AddSingleton(_ =>
-    {
-        var cosmosClientOptions = new CosmosClientOptions
-        {
-            ConnectionMode = ConnectionMode.Gateway
-        };
+    builder.Services.AddSingleton(_ => new CosmosClient(cosmosdbConnectionString));
 
-        return new CosmosClient(cosmosdbConnectionString, cosmosClientOptions);
-    });
-
-    builder.Services.AddSingleton<CosmosDbService>(sp =>
+    builder.Services.AddTransient<CosmosDbService>(sp =>
     {
         var cosmosClient = sp.GetRequiredService<CosmosClient>();
         var cosmosDbService = new CosmosDbService(cosmosClient, databaseId, containerId);
