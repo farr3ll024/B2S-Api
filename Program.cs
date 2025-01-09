@@ -22,20 +22,32 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 
 builder.Services.AddCors(options =>
 {
+    var portalUrl = builder.Configuration["PortalUrl"];
+    var portalUrl2 = builder.Configuration["PortalUrl2"];
+
+    // if (!string.IsNullOrEmpty(portalUrl) && !string.IsNullOrEmpty(portalUrl2))
+    //     policy.WithOrigins(portalUrl, portalUrl2)
+    //         .AllowAnyHeader()
+    //         .AllowAnyMethod();
+
+    options.AddPolicy("AllowOrigins",
+        policy =>
+        {
+            if (!string.IsNullOrEmpty(portalUrl) && !string.IsNullOrEmpty(portalUrl2))
+                policy
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .WithOrigins(portalUrl, portalUrl2)
+                    .WithMethods("POST", "PUT", "PATCH", "GET", "DELETE")
+                    .AllowAnyHeader();
+        }
+    );  
+    
     options.AddPolicy("AllowFrontend",
         policy =>
         {
             policy.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
-            
-            // var portalUrl = builder.Configuration["PortalUrl"];
-            // var portalUrl2 = builder.Configuration["PortalUrl2"];
-
-            // if (!string.IsNullOrEmpty(portalUrl) && !string.IsNullOrEmpty(portalUrl2))
-            //     policy.WithOrigins(portalUrl, portalUrl2)
-            //         .AllowAnyHeader()
-            //         .AllowAnyMethod();
         });
 });
 
@@ -79,7 +91,7 @@ var app = builder.Build();
 // -------------------------------
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors("AllowFrontend");
+app.UseCors("AllowOrigins");
 app.UseAuthorization();
 
 // -------------------------------
