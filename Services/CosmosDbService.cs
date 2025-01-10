@@ -68,10 +68,5 @@ public class CosmosDbService(CosmosClient cosmosClient, string databaseId, strin
             // _logger.LogError($"Document not found. id: {id}, partitionKey: {partitionKey}");
             throw new Exception($"Document with id '{id}' and partitionKey '{partitionKey}' was not found.", ex);
         }
-        catch (Exception ex)
-        {
-            // _logger.LogError($"Failed to update document. id: {id}, partitionKey: {partitionKey}, Error: {ex.Message}");
-            throw;
-        }
     }
 }

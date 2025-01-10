@@ -47,6 +47,7 @@ public class MessageSenderService : BackgroundService
 
     private async Task SendFirstMessageAsync(CancellationToken stoppingToken)
     {
+        stoppingToken.ThrowIfCancellationRequested();
         try
         {
             // Retrieve the first message from Cosmos DB
@@ -60,7 +61,6 @@ public class MessageSenderService : BackgroundService
                 _logger.LogInformation(
                     $"Sending message to: {firstMessage.RecipientEmail}, Subject: {firstMessage.Subject}");
 
-                // Simulate sending the message
                 await _emailService.SendEmailAsync(firstMessage.RecipientEmail, firstMessage.Subject,
                     firstMessage.PlainTextContent, firstMessage.HtmlContent);
 
@@ -106,24 +106,17 @@ public class Message
     [JsonPropertyName("id")]
     public string Id { get; set; }
 
-    [JsonPropertyName("key")]
-    public string Key { get; set; }
+    [JsonPropertyName("key")] public string Key { get; set; } = string.Empty;
 
-    [JsonPropertyName("partitionKey")]
-    public string PartitionKey { get; set; }
+    [JsonPropertyName("partitionKey")] public string PartitionKey { get; set; } = string.Empty;
 
-    [JsonPropertyName("recipientEmail")]
-    public string RecipientEmail { get; set; }
+    [JsonPropertyName("recipientEmail")] public string RecipientEmail { get; set; } = string.Empty;
 
-    [JsonPropertyName("subject")]
-    public string Subject { get; set; }
+    [JsonPropertyName("subject")] public string Subject { get; set; } = string.Empty;
 
-    [JsonPropertyName("plainTextContent")]
-    public string PlainTextContent { get; set; }
+    [JsonPropertyName("plainTextContent")] public string PlainTextContent { get; set; } = string.Empty;
 
-    [JsonPropertyName("htmlContent")]
-    public string HtmlContent { get; set; }
+    [JsonPropertyName("htmlContent")] public string HtmlContent { get; set; } = string.Empty;
 
-    [JsonPropertyName("sent")]
-    public DateTime? Sent { get; set; } // Allow null values
+    [JsonPropertyName("sent")] public DateTime? Sent { get; set; } = null;
 }
