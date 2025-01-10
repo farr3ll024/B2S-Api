@@ -30,9 +30,14 @@ public class MessageSenderService : BackgroundService
         // Normal execution: Send messages at 8 AM CST daily
         while (!stoppingToken.IsCancellationRequested)
         {
-            var now = DateTimeOffset.UtcNow;
+            var now = DateTime.Now;
+
+            // Calculate the first day of the next month
+            var firstOfNextMonth = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+
+            // Set the time to 8 AM CST on the first of the month
             var nextRunTime = TimeZoneInfo.ConvertTime(
-                new DateTimeOffset(now.Date.AddHours(14)), // 8 AM CST
+                new DateTimeOffset(firstOfNextMonth.AddHours(14)), // 8 AM CST
                 TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time")
             );
             var delay = nextRunTime - now;
@@ -51,7 +56,8 @@ public class MessageSenderService : BackgroundService
         try
         {
             // Retrieve the first message from Cosmos DB
-            var query = "SELECT * FROM c WHERE NOT IS_NULL(c.id) AND NOT IS_NULL(c.partitionKey) AND IS_NULL(c.sent)";
+            const string query =
+                "SELECT * FROM c WHERE NOT IS_NULL(c.id) AND NOT IS_NULL(c.partitionKey) AND IS_NULL(c.sent)";
             var messages = await _cosmosDbService.GetItemsAsync<Message>(query);
 
             var firstMessage = messages.FirstOrDefault();
